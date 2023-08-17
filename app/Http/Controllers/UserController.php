@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserRole;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use \Datetime;
 
 class UserController extends Controller
 {
@@ -12,7 +17,15 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response(['message' => 'ciao'], 200);
+        $data = DB::table('orders')->select('created_at')->where('id', 87)->get()[0];
+      
+        $date1 = new DateTime(date("Y-m-d h:i:s"));
+        // $date2 = new DateTime(date($data->created_at));
+        // $interval = $date1->diff($date2);
+
+
+        DB::table('orders')->where('created_at'-$date1->format('i'), '=', 27)->delete();
+        return response($interval->s, 200);
         //return User::all();
     }
 
@@ -21,24 +34,94 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // $fields = $request->validate([
-        //     'email' => 'required|string|unique:users,email',
-        //     'password' => 'required|string|confirmed'
-        // ]);
+        
+        $fields = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|string|unique:users,email',
+            'password' => 'required|string'
+        ]);
 
-        // $user = User::create([
-        //     'email' => $fields['name'],
-        //     'password' => bcrypt($fields['password'])
-        // ]);
+        $user = User::create([
+            'name' => $fields['name'],
+            'email' => $fields['email'],
+            'password' => bcrypt($fields['password'])
+        ]);
 
-        // $token = $user->createToken('myapptoken')->plainTextToken;
+        $token = $user->createToken('myapptoken')->plainTextToken;
+        
+        //Sono insicuro sull'ordine
+        $role_id = DB::table('roles')->select('id')->where('role_name', $request->input('role'))->first();
 
-        // $response = [
-        //     'user' => $user,
-        //     'token' => $token
-        // ];
-            $response = [ 'user' => $request -> email];
+        $user_role = UserRole::create([
+            'user_id' => $user->id,
+            'role_id' => $role_id -> id
+        ]);
 
+        // Altro modo per fare l'insert
+        // DB::table('user_roles')->insert(
+        //     ['user_id' => $user -> {'id'}, 'role_id' => $role_id]
+        // );
+
+        $response = [
+            'user' => $user,
+            'token' => $token,
+            'user_role' => $request->input('role')
+        ];
+        return response($response, 201);
+    }
+
+
+    public function login(Request $request)
+    {
+        $fields = $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string'
+        ]);
+
+        $user = User::where('email', $fields['email'])->first();
+
+        if(!$user || !Hash::check($fields['password'], $user->password)){
+            return response([
+                'message' => 'Bad creds'
+            ], 401);
+        }
+
+        $token = $user->createToken('myapptoken')->plainTextToken;
+
+        // Restituire il ruolo
+        
+        $users_roles = DB::table('users')
+        ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
+        ->join('roles', 'roles.id', '=', 'user_roles.role_id')
+        ->select('roles.role_name')
+        ->where('users.id', $user->id)
+        ->first();
+
+
+        $response = [
+            'user' => $user,
+            'token' => $token,
+            'role' => $users_roles->role_name
+        ];
+        return response($response, 201);
+    }
+
+    //Logout
+    public function logout(Request $request){
+        auth()->user()->tokens()->delete();
+
+        return [
+            'message' => 'Logged out'
+        ];
+    }
+
+
+    // Funzione che prende in entrata id user e restituisce id role
+    public function getRole(Request $request)
+    {
+        $response = [
+            
+        ];
         return response($response, 201);
     }
 

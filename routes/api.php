@@ -6,6 +6,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrdineController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\MessageBirdController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -35,6 +37,7 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function(){
     Route::get('/storico', [OrdineController::class,'GetStorico'] );
     Route::post('/acquista', [OrdineController::class,'ProcessOrder'] );
     Route::get('export/{user_id}', [OrdineController::class, 'export']);
+    
 });
 
 
@@ -51,3 +54,9 @@ Route::post('/findArticles', [ArticleController::class,'FindArticle'] );
 
 
 Route::post('/send-email', [MailController::class, 'sendEmail']);
+Route::get('google-autocomplete', [GoogleController::class, 'index']);
+
+Route::post('/send-sms', [MessageBirdController::class, 'sendSms']);
+Route::post('/send-wa', [MessageBirdController::class, 'MessageWA']);
+
+Route::post('/save-number', [MessageBirdController::class, 'SaveNumber']);

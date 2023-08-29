@@ -60,3 +60,5 @@ Route::post('/send-sms', [MessageBirdController::class, 'sendSms']);
 Route::post('/send-wa', [MessageBirdController::class, 'MessageWA']);
 
 Route::post('/save-number', [MessageBirdController::class, 'SaveNumber']);
+
+Route::post('/sendEmailPhp', [MailController::class, 'sendEmailPhp']);

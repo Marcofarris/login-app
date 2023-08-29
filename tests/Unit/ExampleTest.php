@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 
+
 class ExampleTest extends TestCase
 {
     /**
@@ -13,4 +14,13 @@ class ExampleTest extends TestCase
     {
         $this->assertTrue(true);
     }
+
+    public function testBoxContents()
+    {
+        $box = "toy";
+        $this->assertEquals("toy", $box);
+       // $this->assertNull($box);
+    }
+
+   
 }

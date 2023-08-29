@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 class ArticleController extends Controller
 {
     public function GetArticlesByCategory(Request $request){
+      
         $articles = DB::table('articles')
         ->join('categories', 'categories.id', '=', 'articles.category_id')
         ->select('articles.id','articles.title', 'articles.description','categories.title as category','articles.price')

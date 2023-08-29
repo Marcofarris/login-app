@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.8",
         "maatwebsite/excel": "^3.1",
         "messagebird/php-rest-api": "^3.1",
+        "phpmailer/phpmailer": "^6.8",
         "phpoffice/phpspreadsheet": "^1.29",
         "revolution/laravel-google-sheets": "^6.2"
     },

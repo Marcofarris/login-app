@@ -26,6 +26,7 @@ class OrdineController extends Controller
 
     public function CreateOrder(Request $request)
     {
+       
         $ordine = Order::create([
             'quantita' => $request->quantita,
             'user_id' => $request->user_id,
@@ -95,7 +96,6 @@ class OrdineController extends Controller
 
     // Stampa Excell Storico
     public function export($user_id){
-
            
         $storico = DB::table('users')
         ->join('purchases', 'users.id', '=', 'purchases.user_id')

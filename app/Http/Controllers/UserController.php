@@ -17,16 +17,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $data = DB::table('orders')->select('created_at')->where('id', 87)->get()[0];
-      
-        $date1 = new DateTime(date("Y-m-d h:i:s"));
-        // $date2 = new DateTime(date($data->created_at));
-        // $interval = $date1->diff($date2);
-
-
-        DB::table('orders')->where('created_at'-$date1->format('i'), '=', 27)->delete();
-        return response($interval->s, 200);
-        //return User::all();
+        
+        return "ciao";
     }
 
     /**
